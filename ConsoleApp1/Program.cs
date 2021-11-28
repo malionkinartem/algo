@@ -97,6 +97,28 @@ namespace ConsoleApp1
             var l2 = new ListNode(9, new ListNode(9));
             var res = sln.AddTwoNumbers(l1, l2);
 
+            Console.WriteLine("Longest Substring Without Repeating Characters");
+            var length = sln.LengthOfLongestSubstring("abcabcbb");
+            Console.WriteLine($"Result: {length}");
+
+            Console.WriteLine("Median of Two Sorted Arrays");
+            int[] nums1 = new int[2] { 1, 3 };
+            int[] nums2 = new int[1] { 2 };
+            var resp = sln.FindMedianSortedArrays(nums1, nums2);
+
+
+            string s = "abb";
+            var polindrom = sln.LongestPalindrome(s);
+            Console.WriteLine($"Longest Palindrome: {polindrom}");
+
+            int[] prices = new int[] { 7, 6, 4, 3, 1 };
+            var maxProfit = sln.MaxProfit(prices);
+            Console.WriteLine($"MaxProfit: {maxProfit}");
+            
+            var stairsOptions = sln.ClimbStairs(44);
+            Console.WriteLine($"ClimbStairs: {stairsOptions}");
+
+
             Console.ReadLine();
         }
 
@@ -210,37 +232,6 @@ namespace ConsoleApp1
                     matrix[matrix.Length - 1 - z - j][j] = matrix[matrix.Length - 1 - j][matrix.Length - 1 - z - j];
                     matrix[matrix.Length - 1 - j][matrix.Length - 1 - z - j] = matrix[z + j][matrix.Length - 1 - j];
                     matrix[z + j][matrix.Length - 1 - j] = temp;
-
-                    //for (int i = 0; i < 4; i++)
-                    //{
-                    //    // 0 - top
-                    //    // 1 - right
-                    //    // 2 - bottom
-                    //    // 3 - left
-                    //    int newTemp = 0;
-                    //    switch (i)
-                    //    {
-                    //        case 0:
-                    //            temp = matrix[z + j][matrix.Length - 1 - j];
-                    //            var value = matrix[j][z + j];
-                    //            matrix[z + j][matrix.Length - 1 - j] = value;
-                    //            break;
-                    //        case 1:
-                    //            newTemp = matrix[matrix.Length - 1 - j][matrix.Length - 1 - z - j];
-                    //            matrix[matrix.Length - 1 - j][matrix.Length - 1 - z - j] = temp;
-                    //            temp = newTemp;
-                    //            break;
-                    //        case 2:
-                    //            newTemp = matrix[matrix.Length - 1 - z - j][j];
-                    //            matrix[matrix.Length - 1 - z - j][j] = temp;
-                    //            temp = newTemp;
-                    //            break;
-                    //        case 3:
-                    //            matrix[j][z + j] = temp;
-                    //            break;
-                    //    }
-
-                    //}
                 }
             }
         }
@@ -261,21 +252,7 @@ namespace ConsoleApp1
         {
             var pathSum = new Dictionary<int, int>();
 
-            //var queue = new Queue<TreeNode>();
-            //queue.Enqueue(root);
             int result = 0;
-            //while (queue.Count != 0)
-            //{
-            //    var node = queue.Dequeue();
-            //    if (node.left != null)
-            //        queue.Enqueue(node.left);
-            //    if (node.right != null)
-            //        queue.Enqueue(node.right);
-
-            //    if (node.val == targetSum)
-            //        result++;
-            //    result += NodePaths(node, targetSum, node.val);
-            //}
 
             result = NodePaths(root, targetSum, 0, pathSum);
 
@@ -304,25 +281,9 @@ namespace ConsoleApp1
             paths += NodePaths(node.left, targetSum, currSum, pathSum.ToDictionary(entry => entry.Key, entry => entry.Value));
             paths += NodePaths(node.right, targetSum, currSum, pathSum.ToDictionary(entry => entry.Key, entry => entry.Value));
 
-            //if (node.left != null)
-            //{
-            //    if (currVal + node.left.val == targetSum)
-            //        paths++;
-
-            //    paths += NodePaths(node.left, targetSum, currVal + node.left.val);
-            //}
-
-            //if (node.right != null)
-            //{
-            //    if (currVal + node.right.val == targetSum)
-            //        paths++;
-
-            //    paths += NodePaths(node.right, targetSum, currVal + node.right.val);
-            //}
 
             return paths;
         }
-
 
         public int PathSum2(TreeNode root, int targetSum)
         {
@@ -423,16 +384,140 @@ namespace ConsoleApp1
             return rootNode;
         }
 
-        private int Length(ListNode node)
+        public int LengthOfLongestSubstring(string s)
         {
-            int index = 1;
-            while (node.next != null)
+            var arr = Enumerable.Repeat(-1, 256).ToArray();
+
+            int longestStreak = 0;
+            int currentStreakStartIndex = 0;
+            for (int i = 0; i < s.Length; i++)
             {
-                index++;
-                node = node.next;
+                if (arr[s[i]] != -1 && arr[s[i]] >= currentStreakStartIndex)
+                {
+                    longestStreak = Math.Max(longestStreak, i - currentStreakStartIndex);
+
+                    if (longestStreak > s.Length - currentStreakStartIndex)
+                        return longestStreak;
+
+                    currentStreakStartIndex = arr[s[i]] + 1;
+                }
+
+                arr[s[i]] = i;
             }
 
-            return index;
+            if (s.Length - currentStreakStartIndex > longestStreak)
+                longestStreak = s.Length - currentStreakStartIndex;
+
+
+            return longestStreak;
+
+        }
+
+        public double FindMedianSortedArrays(int[] nums1, int[] nums2)
+        {
+            var median = (nums1.Length + nums2.Length) / 2;
+
+            //var max = Math.Max(nums1.Length > 0 ? nums1[nums1.Length - 1] : 0, nums2.Length > 0 ? nums1[nums2.Length - 1] : 0);
+
+            //var l1 = FindMedian(nums1, max / 2);
+            //var l2 = FindMedian(nums2, max / 2);
+
+            return 0;
+        }
+
+        private IEnumerable<int> FindMedian(int[] arr, int value)
+        {
+            if (arr.Length == 0)
+                return new List<int>();
+
+            if (arr[0] < value)
+                return new List<int> { arr[0] };
+
+            if (arr[arr.Length - 1] < value)
+                return new List<int> { arr[arr.Length - 1] };
+
+            int medianIndex = arr.Length / 2;
+
+
+            if (arr[medianIndex] < value && arr[medianIndex + 1] >= value)
+                return new List<int> { arr[medianIndex], arr[medianIndex + 1] };
+            else if (arr[medianIndex] > value)
+                return FindMedian(arr.Take(medianIndex + 1).ToArray(), value);
+            else return FindMedian(arr.Skip(medianIndex + 1).ToArray(), value);
+
+        }
+
+        public string LongestPalindrome(string s)
+        {
+            string result = s[0].ToString();
+            var ss = string.Join('|', s.ToArray());
+            for (int i = 1; i < ss.Length; i++)
+            {
+                if (result.Length > (ss.Length - i / 2) + 1)
+                    break;
+
+                int index = 1;
+                int polindromLength = 1;
+                while (i + index < ss.Length && i - index >= 0)
+                {
+                    if (ss[i - index] != ss[i + index])
+                        break;
+
+                    polindromLength += 2;
+                    index++;
+                }
+
+                var newString = ss.Substring(i - polindromLength / 2, polindromLength).Replace("|", "");
+                if (result.Length < newString.Length)
+                    result = newString;
+            }
+
+            return result;
+        }
+
+        public int MaxProfit(int[] prices)
+        {
+            int index = 0;
+
+            int profit = 0;
+            for (int j = 1; j < prices.Length; j++)
+            {
+                if (prices[index] < prices[j])
+                {
+                    var temp = prices[j] - prices[index];
+                    if (temp > profit)
+                        profit = temp;
+
+                }
+                else index = j;
+            }
+
+            return profit;
+        }
+
+
+        public int ClimbStairs(int n)
+        {
+            var path = ClimbPath(0, 1, n);
+            path += ClimbPath(0, 2, n);
+
+            return path;
+        }
+
+        private int ClimbPath(int pastStairs, int increment, int allStairs)
+        {
+            if (pastStairs + increment == allStairs)
+                return 1;
+            else if (pastStairs + increment > allStairs)
+                return 0;
+            else
+            {
+                int paths = 0;
+                paths += ClimbPath(pastStairs + increment, 1, allStairs);
+                paths += ClimbPath(pastStairs + increment, 2, allStairs);
+
+                return paths;
+            }
         }
     }
 }
